@@ -65,6 +65,7 @@ public:
     Comment comment() const;
     std::list<Time_Interval> opening_time() const;
     Favorite_Status status() const;
+
     void name(std::string &);
     void address(std::string &);
     void price(int &);
@@ -87,9 +88,11 @@ public:
     void insert(Restaurant &data);
     void remove(std::string &name);
     void update(std::string &name, Restaurant &data);
-    void show() const;                                                                                                                                      // show all element in dataset
-    std::vector<Restaurant> find(std::vector<Food_Catagory> &filterArray, int &price = AVG_PRICE, Favorite_Status &status = Favorite_Status::NORMAL) const; // reply the queries
-    Restaurant search(std::string &name) const;                                                                                                             // search by name
+    void show() const;                                                                                                                                                                      // show all element in dataset
+    std::vector<Restaurant> find(std::vector<Food_Catagory> &filterArray, int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const; // reply the queries
+    std::vector<Restaurant> search_Addr(std::string &addr) const;
+    Restaurant search(std::string &name) const; // search by name
+
     ~Restaurants();
 };
 

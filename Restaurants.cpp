@@ -142,13 +142,16 @@ void Restaurants::show() const
     }
 }
 
-std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int &price = AVG_PRICE, Favorite_Status &status = Favorite_Status::NORMAL) const
+std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const
 {
     std::vector<Restaurant> list;
 
-    for (std::map<std::string, Restaurant>::iterator it = mapRestaurant.begin; it != mapRestaurant.end(); ++it)
+    for (std::map<std::string, Restaurant>::iterator it = mapRestaurant.begin(); it != mapRestaurant.end(); ++it)
     {
         if (price > it->second.price())
+            continue;
+
+        if ((static_cast<int> comment) > (static_cast<int> it->second.comment()))
             continue;
 
         if (status == Favorite_Status::FAVORITE && it->second.status() != Favorite_Status::FAVORITE)
@@ -205,9 +208,30 @@ std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int
     return list;
 }
 
+std::vector<Restaurant> search_Addr(std::string &addr) const
+{
+    std::vector<Restaurant> list;
+    std::string tmp;
+    for (std::map<std::string, Restaurant>::iterator it = mapRestaurant.begin(); it != mapRestaurant.cend(); ++it)
+    {
+        tmp = it->second.address();
+        if (tmp.find(addr) != std::string::npos)
+            list.push_back(it->second);
+    }
+
+    return list;
+}
+
 Restaurant Restaurants::search(std::string &name) const
 {
-    return mapRestaurant[name];
+    std::map<std::string, Restaurant>::iterator it;
+    if (it = mapRestaurant.find(name) != mapRestaurant.end())
+        return it->second;
+    else
+    {
+        std::cout << name << " is not in your database." << std::endl;
+        return mapRestaurant.begin()->second;
+    }
 }
 
 Restaurants::~Restaurants()
