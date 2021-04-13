@@ -56,6 +56,7 @@ private:
     Favorite_Status _status;
 
 public:
+    Restaurant();
     Restaurant(Restaurant &);
     Restaurant(std::string &name, std::string &address, int &price, std::vector<Food_Catagory> &kind, Comment &comment, std::list<Time_Interval> &time);
     std::string name() const;

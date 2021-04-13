@@ -3,8 +3,24 @@
 /*****************************
  * Initialize class Restaurant 
  *****************************/
+Restaurant::Restaurant()
+{
+    _name = string("empty");
+    _address = string();
+    _price = 0;
+    _kind = std::vector<Food_Catagory>(CATAGORY_NUM, false);
+    _comment = Comment::WORST;
+    _opening_time = std::list<Time_Interval>();
+    _status = Favorite_Status::NORMAL;
+}
+
 Restaurant::Restaurant(Restaurant &node)
 {
+    if (node.name() == "empty")
+    {
+        std::cout << "Argument is an empty object!" << std::endl;
+    }
+
     _name = node.name();
     _address = node.address();
     _price = node.price();
@@ -208,7 +224,7 @@ std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int
     return list;
 }
 
-std::vector<Restaurant> search_Addr(std::string &addr) const
+std::vector<Restaurant> Rstaurants::search_Addr(std::string &addr) const
 {
     std::vector<Restaurant> list;
     std::string tmp;
