@@ -5,8 +5,8 @@
  *****************************/
 Restaurant::Restaurant()
 {
-    _name = string("empty");
-    _address = string();
+    _name = std::string("empty");
+    _address = std::string();
     _price = 0;
     _kind = std::vector<Food_Catagory>(CATAGORY_NUM, false);
     _comment = Comment::WORST;
@@ -151,8 +151,7 @@ void Restaurants::update(std::string &name, Restaurant &item)
 
 void Restaurants::show() const
 {
-    std::map<std::string, Restaurant>::iterator it;
-    for (it = mapRestaurant.begin(); it != mapRestaurant.cend(); ++it)
+    for (auto it=mapRestaurant.begin(); it != mapRestaurant.end(); ++it)
     {
         std::cout << it->first << std::endl;
     }
@@ -162,12 +161,12 @@ std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int
 {
     std::vector<Restaurant> list;
 
-    for (std::map<std::string, Restaurant>::iterator it = mapRestaurant.begin(); it != mapRestaurant.end(); ++it)
+    for (auto it = mapRestaurant.begin(); it != mapRestaurant.end(); ++it)
     {
         if (price > it->second.price())
             continue;
 
-        if ((static_cast<int> comment) > (static_cast<int> it->second.comment()))
+        if (static_cast<int>(comment) > static_cast<int>(it->second.comment()))
             continue;
 
         if (status == Favorite_Status::FAVORITE && it->second.status() != Favorite_Status::FAVORITE)
@@ -224,7 +223,7 @@ std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int
     return list;
 }
 
-std::vector<Restaurant> Rstaurants::search_Addr(std::string &addr) const
+std::vector<Restaurant> Restaurants::search_Addr(std::string &addr) const
 {
     std::vector<Restaurant> list;
     std::string tmp;
@@ -240,8 +239,8 @@ std::vector<Restaurant> Rstaurants::search_Addr(std::string &addr) const
 
 Restaurant Restaurants::search(std::string &name) const
 {
-    std::map<std::string, Restaurant>::iterator it;
-    if (it = mapRestaurant.find(name) != mapRestaurant.end())
+    std::map<std::string, Restaurant>::const_iterator it = mapRestaurant.find(name);
+    if (it != mapRestaurant.end())
         return it->second;
     else
     {
