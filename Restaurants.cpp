@@ -7,14 +7,16 @@ Restaurant::Restaurant()
 {
     _name = std::string("empty");
     _address = std::string();
+    _phone = std::string();
+    _menu = std::string();
     _price = 0;
     _kind = std::vector<Food_Catagory>(CATAGORY_NUM, false);
+    _opening_time = std::vector<Time_Interval>(TIME_SLOT, false);
     _comment = Comment::WORST;
-    _opening_time = std::list<Time_Interval>();
     _status = Favorite_Status::NORMAL;
 }
 
-Restaurant::Restaurant(Restaurant &node)
+Restaurant::Restaurant(const Restaurant &node)
 {
     if (node.name() == "empty")
     {
@@ -23,17 +25,21 @@ Restaurant::Restaurant(Restaurant &node)
 
     _name = node.name();
     _address = node.address();
+    _phone = node.phone();
+    _menu = node.menu();
     _price = node.price();
     _kind = node.kind();
-    _comment = node.comment();
     _opening_time = node.opening_time();
+    _comment = node.comment();
     _status = node.status();
 }
 
-Restaurant::Restaurant(std::string &name, std::string &address, int &price, std::vector<Food_Catagory> &kind, Comment &comment, std::list<Time_Interval> &time)
+Restaurant::Restaurant(std::string &name, std::string &address, std::string &phone, std::string &menu, int price, std::vector<Food_Catagory> &kind, std::vector<Time_Interval> &time, Comment &comment)
 {
     _name = name;
     _address = address;
+    _phone = phone;
+    _menu = menu;
     _price = price;
     _kind = kind;
     _comment = comment;
@@ -46,7 +52,7 @@ std::string Restaurant::name() const
     return _name;
 }
 
-void Restaurant::name(std::string &name)
+void Restaurant::name(const std::string &name)
 {
     _name = name;
 }
@@ -56,9 +62,29 @@ std::string Restaurant::address() const
     return _address;
 }
 
-void Restaurant::address(std::string &address)
+void Restaurant::address(const std::string &address)
 {
     _address = address;
+}
+
+std::string Restaurant::phone() const
+{
+    return _phone;
+}
+
+void Restaurant::phone(const std::string &phone)
+{
+    _phone = phone;
+}
+
+std::string Restaurant::menu() const
+{
+    return _menu;
+}
+
+void Restaurant::menu(const std::string &menu)
+{
+    _menu = menu;
 }
 
 int Restaurant::price() const
@@ -76,7 +102,7 @@ std::vector<Food_Catagory> Restaurant::kind() const
     return _kind;
 }
 
-void Restaurant::kind(std::vector<Food_Catagory> &kind)
+void Restaurant::kind(const std::vector<Food_Catagory> &kind)
 {
     _kind = kind;
 }
@@ -91,12 +117,12 @@ void Restaurant::comment(Comment &comment)
     _comment = comment;
 }
 
-std::list<Time_Interval> Restaurant::opening_time() const
+std::vector<Time_Interval> Restaurant::opening_time() const
 {
     return _opening_time;
 }
 
-void Restaurant::opening_time(std::list<Time_Interval> &time)
+void Restaurant::opening_time(const std::vector<Time_Interval> &time)
 {
     _opening_time = time;
 }
@@ -111,6 +137,24 @@ void Restaurant::status(Favorite_Status &status)
     _status = status;
 }
 
+Restaurant& Restaurant::operator=(const Restaurant &node)
+{
+    if(this != &node)
+    {
+        _name = node.name();
+        _address = node.address();
+        _phone = node.phone();
+        _menu = node.menu();
+        _price = node.price();
+        _kind = node.kind();
+        _opening_time = node.opening_time();
+        _comment = node.comment();
+        _status = node.status();
+    }
+
+    return *this;
+}
+
 Restaurant::~Restaurant() {}
 
 /*****************************
@@ -118,13 +162,13 @@ Restaurant::~Restaurant() {}
  *****************************/
 Restaurants::Restaurants(std::vector<Restaurant> &list)
 {
-    for (std::vector<Restaurant>::iterator it = list.begin(); it != list.end(); ++it)
+    for (auto it = list.begin(); it != list.end(); ++it)
     {
         mapRestaurant[it->name()] = *it;
     }
 }
 
-Restaurants::Restaurants(Restaurant &item)
+Restaurants::Restaurants(const Restaurant &item)
 {
     mapRestaurant[item.name()] = item;
 }
@@ -134,7 +178,7 @@ int Restaurants::get_amount() const
     return mapRestaurant.size();
 }
 
-void Restaurants::insert(Restaurant &item)
+void Restaurants::insert(const Restaurant &item)
 {
     mapRestaurant[item.name()] = item;
 }
@@ -144,7 +188,7 @@ void Restaurants::remove(std::string &name)
     mapRestaurant.erase(name);
 }
 
-void Restaurants::update(std::string &name, Restaurant &item)
+void Restaurants::update(std::string &name, const Restaurant &item)
 {
     mapRestaurant[name] = item;
 }
@@ -157,12 +201,15 @@ void Restaurants::show() const
     }
 }
 
-std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const
+std::vector<Restaurant> Restaurants::find(const std::vector<Food_Catagory> &query, const std::vector<Time_Interval> &qtime, int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const
 {
     std::vector<Restaurant> list;
+    bool is_opening = false;
 
     for (auto it = mapRestaurant.begin(); it != mapRestaurant.end(); ++it)
     {
+        is_opening = false;
+
         if (price > it->second.price())
             continue;
 
@@ -178,6 +225,16 @@ std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int
         if (status == Favorite_Status::DISLIKE && it->second.status() != Favorite_Status::DISLIKE)
             continue;
 
+        for (int i = 0; i != TIME_SLOT; ++i)
+        {
+            if (qtime[i] && (it->second.opening_time())[i])
+                is_opening = true;
+        }
+
+        if (!is_opening)
+            continue;
+
+        // Final Selection
         if (query[Food::BREAKFAST] && (it->second.kind())[Food::BREAKFAST])
         {
             list.push_back(it->second);
@@ -223,11 +280,11 @@ std::vector<Restaurant> Restaurants::find(std::vector<Food_Catagory> &query, int
     return list;
 }
 
-std::vector<Restaurant> Restaurants::search_Addr(std::string &addr) const
+std::vector<Restaurant> Restaurants::search_Addr(const std::string &addr) const
 {
     std::vector<Restaurant> list;
     std::string tmp;
-    for (std::map<std::string, Restaurant>::iterator it = mapRestaurant.begin(); it != mapRestaurant.cend(); ++it)
+    for (auto it = mapRestaurant.begin(); it != mapRestaurant.cend(); ++it)
     {
         tmp = it->second.address();
         if (tmp.find(addr) != std::string::npos)
@@ -237,7 +294,7 @@ std::vector<Restaurant> Restaurants::search_Addr(std::string &addr) const
     return list;
 }
 
-Restaurant Restaurants::search(std::string &name) const
+Restaurant Restaurants::search(const std::string &name) const
 {
     std::map<std::string, Restaurant>::const_iterator it = mapRestaurant.find(name);
     if (it != mapRestaurant.end())

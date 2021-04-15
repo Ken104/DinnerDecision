@@ -1,5 +1,5 @@
-#ifndef RESTAURANTS
-#define RESTAURANTS
+#ifndef __RESTAURANTS__
+#define __RESTAURANTS__
 
 #include <map>
 #include <list>
@@ -9,10 +9,11 @@
 #include <utility>
 
 #define CATAGORY_NUM 8
-#define AVG_PRICE 99 // $99, $199, $299
+#define TIME_SLOT 4
+#define AVG_PRICE 60 // $0~60, $60~100, $100~200, $200↑
 
-typedef std::pair<int, int> Time_Interval;
 typedef bool Food_Catagory;
+typedef bool Time_Interval;
 
 // Either favorite or blacklist
 enum class Favorite_Status
@@ -31,7 +32,17 @@ enum class Comment
     BEST
 };
 
+// Being used for filter. time[Time::Morning] may return whether it's true or not.
+// TIME_SLOT = 4
+enum Time{
+    Moring,
+    Afternoon,
+    Evening,
+    Night
+};
+
 // Being used for filter. kind[Food::BREAKFAST] may return whether it's true or not.
+// CATAGARY_NUM = 8
 enum Food
 {
     BREAKFAST,
@@ -49,30 +60,38 @@ class Restaurant
 private:
     std::string _name;
     std::string _address;
+    std::string _phone;
+    std::string _menu; //menu.jpg
     int _price;
     std::vector<Food_Catagory> _kind;
+    std::vector<Time_Interval> _opening_time;
     Comment _comment;
-    std::list<Time_Interval> _opening_time;
     Favorite_Status _status;
 
 public:
     Restaurant();
-    Restaurant(Restaurant &);
-    Restaurant(std::string &name, std::string &address, int &price, std::vector<Food_Catagory> &kind, Comment &comment, std::list<Time_Interval> &time);
+    Restaurant(const Restaurant &);
+    Restaurant(std::string &name, std::string &address, std::string &phone, std::string &menu, int price, std::vector<Food_Catagory> &kind, std::vector<Time_Interval> &time, Comment &comment);
     std::string name() const;
     std::string address() const;
+    std::string phone() const;
+    std::string menu() const;
     int price() const;
     std::vector<Food_Catagory> kind() const;
+    std::vector<Time_Interval> opening_time() const;
     Comment comment() const;
-    std::list<Time_Interval> opening_time() const;
     Favorite_Status status() const;
 
-    void name(std::string &);
-    void address(std::string &);
+    Restaurant& operator=(const Restaurant &);
+
+    void name(const std::string &);
+    void address(const std::string &);
+    void phone(const std::string &);
+    void menu(const std::string &);
     void price(int &);
-    void kind(std::vector<Food_Catagory> &filter);
+    void kind(const std::vector<Food_Catagory> &filter);
     void comment(Comment &);
-    void opening_time(std::list<Time_Interval> &);
+    void opening_time(const std::vector<Time_Interval> &);
     void status(Favorite_Status &);
     ~Restaurant();
 };
@@ -84,15 +103,15 @@ private:
 
 public:
     Restaurants(std::vector<Restaurant> &datalist);
-    Restaurants(Restaurant &);
+    Restaurants(const Restaurant &);
     int get_amount() const;
-    void insert(Restaurant &data);
+    void insert(const Restaurant &data);
     void remove(std::string &name);
-    void update(std::string &name, Restaurant &data);
+    void update(std::string &name, const Restaurant &data);
     void show() const;                                                                                                                                                                      // show all element in dataset
-    std::vector<Restaurant> find(std::vector<Food_Catagory> &filterArray, int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const; // reply the queries
-    std::vector<Restaurant> search_Addr(std::string &addr) const;
-    Restaurant search(std::string &name) const; // search by name
+    std::vector<Restaurant> find(const std::vector<Food_Catagory> &filterArray, const std::vector<Time_Interval> &time, int price, Comment comment, Favorite_Status status) const; // reply the queries
+    std::vector<Restaurant> search_Addr(const std::string &addr) const;
+    Restaurant search(const std::string &name) const; // search by name
 
     ~Restaurants();
 };
