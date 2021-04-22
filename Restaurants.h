@@ -109,7 +109,7 @@ public:
     void remove(std::string &name);
     void update(std::string &name, const Restaurant &data);
     void show() const;                                                                                                                                                                      // show all element in dataset
-    std::vector<Restaurant> find(const std::vector<Food_Catagory> &filterArray, const std::vector<Time_Interval> &time, int price, Comment comment, Favorite_Status status) const; // reply the queries
+    std::vector<Restaurant> find(const std::vector<Food_Catagory> &filterArray, const std::vector<Time_Interval> &time = std::vector<Time_Interval>(TIME_SLOT, true), int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const; // reply the queries
     std::vector<Restaurant> search_Addr(const std::string &addr) const;
     Restaurant search(const std::string &name) const; // search by name
 

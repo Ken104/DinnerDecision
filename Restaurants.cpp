@@ -201,7 +201,7 @@ void Restaurants::show() const
     }
 }
 
-std::vector<Restaurant> Restaurants::find(const std::vector<Food_Catagory> &query, const std::vector<Time_Interval> &qtime, int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const
+std::vector<Restaurant> Restaurants::find(const std::vector<Food_Catagory> &query, const std::vector<Time_Interval> &qtime, int price, Comment comment, Favorite_Status status) const
 {
     std::vector<Restaurant> list;
     bool is_opening = false;
