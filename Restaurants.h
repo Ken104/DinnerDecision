@@ -82,18 +82,25 @@ public:
     Comment comment() const;
     Favorite_Status status() const;
 
+    void view() const;
+    void view_kind() const;
+
     Restaurant& operator=(const Restaurant &);
 
     void name(const std::string &);
     void address(const std::string &);
     void phone(const std::string &);
     void menu(const std::string &);
-    void price(int &);
+    void price(int);
     void kind(const std::vector<Food_Catagory> &filter);
+    void kind(Food, bool);
     void comment(Comment &);
     void opening_time(const std::vector<Time_Interval> &);
+    void opening_time(Time, bool);
     void status(Favorite_Status &);
     ~Restaurant();
+
+
 };
 
 class Restaurants
@@ -102,6 +109,7 @@ private:
     std::map<std::string, Restaurant> mapRestaurant;
 
 public:
+    Restaurants();
     Restaurants(std::vector<Restaurant> &datalist);
     Restaurants(const Restaurant &);
     int get_amount() const;
