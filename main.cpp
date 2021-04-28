@@ -6,7 +6,8 @@ using namespace std;
 int main(){
     Restaurants *mytest = nullptr;
     Restaurant res1;
-    vector<Food_Catagory> query(CATAGORY_NUM, false);
+    queryArg arg;
+
     res1.name(string("Abao"));
     res1.address(string("CY"));
     res1.phone(string("0228836654"));
@@ -28,9 +29,25 @@ int main(){
 
     mytest->show();
 
-    query[Food::BREAKFAST] = true;
+    /* Default arg:
+     * filterArray = {false, false, false, false, false, false, false, false}
+     * time = {false, false, false, false}
+     * price = AVG_PRICE (=60)
+     * comment = Comment::WORST;
+     * status = Favorite_Status::NORMAL
+     
+     If you just feed default arg to find(), you will get nothing. You at least need ...
+     to set 'filterArray' and 'time' when you wanna use class 'queryArg'.
+
+     The following is the example we only set 'filterArray' & 'time' true on 'breakfast' ...
+     and 'morning', respectly.
+     Then the result will free from restrictions of 'price', of 'comment' and of 'status'...
+     (still exclude blacklist).
+    */
+    arg.filterArray[Food::BREAKFAST] = true;
+    arg.time[Time::Moring] = true;
     
-    auto would_like = mytest->find(query);
+    auto would_like = mytest->find(arg);
 
     cout << "\nQuerying start:" << endl;
     for (auto it=would_like.begin();it!=would_like.end();++it)
