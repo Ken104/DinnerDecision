@@ -1,6 +1,18 @@
 #include "Restaurants.h"
 #include <iostream>
 /*****************************
+ * Initialize Argument struct 
+******************************/
+queryArg::queryArg()
+{
+    filterArray = std::vector<Food_Catagory>(CATAGORY_NUM, false);
+    time = std::vector<Time_Interval>(TIME_SLOT, false);
+    price = AVG_PRICE;
+    comment = Comment::WORST;
+    status = Favorite_Status::NORMAL;
+}
+
+/*****************************
  * Initialize class Restaurant 
  *****************************/
 Restaurant::Restaurant()
@@ -307,6 +319,92 @@ void Restaurants::show() const
 
 std::vector<Restaurant> Restaurants::find(const std::vector<Food_Catagory> &query, const std::vector<Time_Interval> &qtime, int price, Comment comment, Favorite_Status status) const
 {
+    std::vector<Restaurant> list;
+    bool is_opening = false;
+    int i=0;
+
+    for (auto it = mapRestaurant.begin(); it != mapRestaurant.end(); ++it)
+    {
+        is_opening = false;
+      
+        if (price > it->second.price())
+            continue;
+
+        if (static_cast<int>(comment) > static_cast<int>(it->second.comment()))
+            continue;
+
+        if (status == Favorite_Status::FAVORITE && it->second.status() != Favorite_Status::FAVORITE)
+            continue;
+
+        if (status == Favorite_Status::NORMAL && it->second.status() == Favorite_Status::DISLIKE)
+            continue;
+
+        if (status == Favorite_Status::DISLIKE && it->second.status() != Favorite_Status::DISLIKE)
+            continue;
+
+        for (i = 0; i != TIME_SLOT; ++i)
+        {
+            if (qtime[i] && (it->second.opening_time())[i])
+                is_opening = true;
+        }
+
+        if (!is_opening)
+            continue;
+
+        // Final Selection
+        if (query[Food::BREAKFAST] && (it->second.kind())[Food::BREAKFAST])
+        {
+            list.push_back(it->second);
+            continue;
+        }
+        if (query[Food::RICE] && (it->second.kind())[Food::RICE])
+        {
+            list.push_back(it->second);
+            continue;
+        }
+        if (query[Food::NOODLES] && (it->second.kind())[Food::NOODLES])
+        {
+            list.push_back(it->second);
+            continue;
+        }
+        if (query[Food::HOTPOT] && (it->second.kind())[Food::HOTPOT])
+        {
+            list.push_back(it->second);
+            continue;
+        }
+        if (query[Food::STEAK] && (it->second.kind())[Food::STEAK])
+        {
+            list.push_back(it->second);
+            continue;
+        }
+        if (query[Food::BRAISE] && (it->second.kind())[Food::BRAISE])
+        {
+            list.push_back(it->second);
+            continue;
+        }
+        if (query[Food::DESSERT] && (it->second.kind())[Food::DESSERT])
+        {
+            list.push_back(it->second);
+            continue;
+        }
+        if (query[Food::FRY] && (it->second.kind())[Food::FRY])
+        {
+            list.push_back(it->second);
+            continue;
+        }
+    }
+
+    return list;
+}
+
+std::vector<Restaurant> Restaurants::find(const queryArg &arg) const
+{
+    std::vector<Food_Catagory> query = arg.filterArray;
+    std::vector<Time_Interval> qtime = arg.time;
+    int price = arg.price;
+    Comment comment = arg.comment;
+    Favorite_Status status = arg.status;
+
     std::vector<Restaurant> list;
     bool is_opening = false;
     int i=0;

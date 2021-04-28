@@ -55,6 +55,16 @@ enum Food
     FRY
 };
 
+class queryArg {
+public:
+    std::vector<Food_Catagory> filterArray;
+    std::vector<Time_Interval> time;
+    int price;
+    Comment comment;
+    Favorite_Status status;
+    queryArg();
+};
+
 class Restaurant
 {
 private:
@@ -118,6 +128,7 @@ public:
     void update(std::string &name, const Restaurant &data);
     void show() const;                                                                                                                                                                      // show all element in dataset
     std::vector<Restaurant> find(const std::vector<Food_Catagory> &filterArray = std::vector<Food_Catagory>(CATAGORY_NUM, true), const std::vector<Time_Interval> &time = std::vector<Time_Interval>(TIME_SLOT, true), int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const; // reply the queries
+    std::vector<Restaurant> find(const queryArg &) const;
     std::vector<Restaurant> search_Addr(const std::string &addr) const;
     Restaurant search(const std::string &name) const; // search by name
 
