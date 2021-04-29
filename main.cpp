@@ -24,8 +24,12 @@ int main(){
     res1.kind(Food::BREAKFAST, true);
     res1.opening_time(Time::Moring, true);
 
+    cout << "--------\n";
+    cout << (mytest->insert(res1)) << ':';
+    cout << (mytest->insert(res1)) << '\n'
+        << "---------" << endl;
 
-    mytest->insert(res1);
+
 
     mytest->show();
 
