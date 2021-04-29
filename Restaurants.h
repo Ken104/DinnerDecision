@@ -123,9 +123,9 @@ public:
     Restaurants(std::vector<Restaurant> &datalist);
     Restaurants(const Restaurant &);
     int get_amount() const;
-    void insert(const Restaurant &data);
+    int insert(const Restaurant &data);
     void remove(std::string &name);
-    void update(std::string &name, const Restaurant &data);
+    int update(std::string &name, const Restaurant &data);
     void show() const;                                                                                                                                                                      // show all element in dataset
     std::vector<Restaurant> find(const std::vector<Food_Catagory> &filterArray = std::vector<Food_Catagory>(CATAGORY_NUM, true), const std::vector<Time_Interval> &time = std::vector<Time_Interval>(TIME_SLOT, true), int price = AVG_PRICE, Comment comment = Comment::WORST, Favorite_Status status = Favorite_Status::NORMAL) const; // reply the queries
     std::vector<Restaurant> find(const queryArg &) const;

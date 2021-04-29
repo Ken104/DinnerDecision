@@ -294,9 +294,17 @@ int Restaurants::get_amount() const
     return mapRestaurant.size();
 }
 
-void Restaurants::insert(const Restaurant &item)
+// Only for inserting new restaurant. Return 0 if insert success.
+// Return 1 if the inserting one has existed in dataset, and the new data will be discarded.
+int Restaurants::insert(const Restaurant &item)
 {
-    mapRestaurant[item.name()] = item;
+    if (mapRestaurant.find(item.name()) == mapRestaurant.end())
+    {
+        mapRestaurant[item.name()] = item;
+        return 0;
+    }
+
+    return 1;
 }
 
 void Restaurants::remove(std::string &name)
@@ -304,9 +312,17 @@ void Restaurants::remove(std::string &name)
     mapRestaurant.erase(name);
 }
 
-void Restaurants::update(std::string &name, const Restaurant &item)
+// Return 0 if update success.
+// Return 1 if the updating one is not in dataset, and the new data will be discarded.
+int Restaurants::update(std::string &name, const Restaurant &item)
 {
-    mapRestaurant[name] = item;
+    if (mapRestaurant.find(name) != mapRestaurant.end())
+    {
+        mapRestaurant[name] = item;
+        return 0;
+    }
+    
+    return 1;
 }
 
 void Restaurants::show() const
